@@ -1,0 +1,64 @@
+--Grupare și filtrare
+--1. Care sunt numele animalelor de care are grija veterinarul cu id-ul 3000 ?
+select nume_animal 
+from animal a 
+natural join veterinar v 
+where id_veterinar =  3000
+order by 1 asc;
+
+
+--Subconsultări în clauza HAVING și/sau FROM
+--2.Care este veterinarul care are cele mai multe consultatii?
+select nume_prenume_veterinar, count(id_fisa) as numar_consultatii
+from fisa_medicala
+natural join veterinar
+group by nume_prenume_veterinar 
+having count(id_fisa) = (select count(id_fisa) from fisa_medicala
+natural join veterinar
+group by id_veterinar 
+order by 1 desc limit 1);
+
+--Expresii-tabelă și "tabele-pivot" (cu sau fără joncțiuni externe)
+--Sa se creeze o tabela pivot in care sa se afiseze brand-ul de mancare si pretul mediu al acesteia in functie de tipul de mancare.
+CREATE EXTENSION tablefunc;
+select * from crosstab (  
+  'select distinct
+    brand_mancare,
+    tip_mancare,
+    round(avg(pret_mancare)) as avg_pret   
+  from mancare
+  group by 1,2
+  order by 1',
+
+  'select distinct tip_mancare from mancare order by 1'
+ )
+ AS (
+   brand_mancare varchar(15),
+   umeda numeric,
+   uscata numeric
+ );
+
+---Interogări (pseudo) recursive
+--Afisati care este calea de la cea mai mica specializare pana la ultima.
+with recursive ierarhie as(
+select nivel, id_veterinar, superior, specializare, 0 as poz
+from veterinar
+where id_veterinar = 3002
+union all
+select v.nivel, v.id_veterinar, v.superior, v.specializare, ierarhie.poz + 1 as poz
+from veterinar v
+inner join ierarhie on v.nivel = ierarhie.superior
+)
+select STRING_AGG(specializare, '>' order by poz asc) as cale from ierarhie;
+
+--Afisati ierarhia veterinarilor.
+with recursive ierarhie as (
+	select nivel, id_veterinar, nume_prenume_veterinar, specializare, superior, 1 as poz
+	from veterinar 
+	where superior is null
+	union all 
+	select v.nivel, v.id_veterinar, v.nume_prenume_veterinar, v.specializare, v.superior, poz + 1
+	from veterinar v 
+	inner join ierarhie on v.superior = ierarhie.nivel
+)
+select * from ierarhie;
