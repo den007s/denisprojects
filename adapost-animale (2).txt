@@ -1,0 +1,169 @@
+drop table if exists Adoptanti cascade;
+CREATE table Adoptanti(
+id_adoptant numeric(5) primary key,
+nume_prenume_adoptant varchar(30) not null,
+localitate varchar(20) not null,
+judet varchar(15) not null,
+telefon char(10) not null,
+email varchar(30) not null
+);
+
+drop table if exists Donator cascade;
+CREATE table Donator(
+id_donator numeric(5) primary key,
+nume_prenume_donator varchar(30) not null,
+localitate varchar(20) not null,
+judet varchar(15) not null,
+telefon char(10) not null,
+email varchar(30) not null
+);
+
+drop table if exists Veterinar cascade;
+CREATE table Veterinar(
+id_veterinar numeric(5) primary key,
+nume_prenume_veterinar varchar(30) not null,
+superior int,
+nivel int not null,
+specializare varchar(30) not null,
+localitate varchar(20) not null,
+judet varchar(15) not null,
+telefon char(10) not null,
+email varchar(30) not null
+);
+
+
+
+drop table if exists Mancare cascade;
+CREATE table Mancare(
+id_mancare numeric(5) primary key,
+tip_mancare varchar(20) not null,
+pret_mancare numeric(9) not null,
+brand_mancare varchar(15) not null
+);
+
+drop table if exists Animal cascade;
+CREATE table Animal(
+id_animal numeric(5) primary key,
+nume_animal varchar(15),
+tip_animal varchar(10) not null,
+greutate numeric not null,
+sex char(1) not null,
+id_adoptant numeric(5), 
+id_donator numeric(5),
+id_mancare numeric(5),
+id_veterinar numeric(5),
+data_primire Date not null constraint ck_data_primire check(data_primire>=(TO_DATE('1800-01-01','YYYY-MM-DD'))),
+data_adoptie Date not null constraint ck_data_adoptie check(data_adoptie>=(TO_DATE('1800-01-01','YYYY-MM-DD'))),
+constraint fk_id_adoptant foreign key(id_adoptant) references adoptanti(id_adoptant),
+constraint fk_id_donator foreign key(id_donator) references donator(id_donator),
+constraint fk_id_mancare foreign key(id_mancare) references mancare(id_mancare),
+constraint fk_id_veterinar foreign key(id_veterinar) references veterinar(id_veterinar)
+);
+
+drop table if exists Fisa_medicala cascade;
+CREATE table Fisa_medicala(
+id_fisa numeric(5) primary key,
+id_veterinar numeric(5),
+id_animal numeric(5),
+id_mancare numeric(5),
+data_tratament date not null constraint ck_data_tratament check(data_tratament>=(TO_DATE('1800-01-01','YYYY-MM-DD'))),
+tratament varchar(50) not null,
+detalii varchar(100),
+constraint fk_id_veterinar foreign key(id_veterinar) references veterinar(id_veterinar),
+constraint fk_id_animal foreign key(id_animal) references animal(id_animal),
+constraint fk_id_mancare foreign key(id_mancare) references mancare(id_mancare)
+);
+
+
+--Adoptanti
+
+insert into adoptanti values(1000, 'Bitoleanu Alexandru', 'Craiova', 'Dolj', '0735337138', 'alex.bitoleanu@gmail.com');
+
+insert into adoptanti values(1001, 'Carla Mălâia', 'Râmnicu Vâlcea', 'Vâlcea', '0745664692', 'carla.malaiau@gmail.com');
+insert into adoptanti values(1002, 'Horia Negoiță', 'Orșova', 'Mehedinți', '0740318036', 'horianegoita@gmail.com');
+insert into adoptanti values(1003, 'Adelina Todică', 'Focșani', 'Vrancea', '0788234464', 'adelinatodica@gmail.com');
+insert into adoptanti values(1004, 'Andreea Dinu', 'Reșița', 'Caraș-Severin', '0744632917', 'andreeadinu@gmail.com');
+insert into adoptanti values(1005, 'Horia Dragomir', 'Slatina', 'Olt', '0725543259', 'horiadragomir@gmail.com');
+insert into adoptanti values(1006, 'Lucian Dinu', 'Iasi', 'Plugari', '0741098737', 'luciandinu@gmail.com');
+insert into adoptanti values(1007, 'Cătălin Dobre', 'Mediaș', 'Sibiu', '0745591366', 'catalindobre@gmail.com');
+insert into adoptanti values(1008, 'Geanina Dimitrescu', 'Alexandria', 'Teleorman', '0740186559', 'geaninadimitrescu@gmail.com');
+insert into adoptanti values(1009, 'Andreea Matasaru', 'Petroșani', 'Hunedoara', '0722669556', 'adreeamatasaru@gmail.com');
+
+
+--Donator
+
+insert into Donator values(2000, 'Viorel Bran', 'Constanta', 'Constanta', '0734567138', 'branviorel@gmail.com');
+
+insert into Donator values(2001, 'Anton Ifrim', 'Pașcani', 'Iași', '0723444680', 'andonifrim@gmail.com');
+insert into Donator values(2002, 'Adina Pălici', 'Dej', 'Cluj', '0730112030', 'adinapalicil@gmail.com');
+insert into Donator values(2003, 'Ștefan Iancu', 'Reghin', 'Mureș', '0268417534', 'bstefaniancu@gmail.com');
+insert into Donator values(2004, 'Gabriela Vlăsceanu', 'Năvodari', 'Constanța', '0723955342', 'gabrielanne@gmail.com');
+insert into Donator values(2005, 'Ionut Cristian', 'Câmpina', 'Prahova', '0723345176', 'ionutmcri@gmail.com');
+insert into Donator values(2006, 'Gloria Matasaru', 'Făgăraș', 'Brașov', '0721744086', 'gloriamatasaeu@gmail.com');
+insert into Donator values(2007, 'Alfred Constantinescu', 'Fetești', 'Ialomița', '0745148183', 'alfredgigi@gmail.com');
+insert into Donator values(2008, 'Florin Diaconescu', 'Borșa', 'Maramureș	', '0722133636', 'florindiaconscl@gmail.com');
+insert into Donator values(2009, 'Adelina Ciocîrlan', 'Roșiorii de Vede', 'Teleorman', '0749060268', 'adelinaiububui@gmail.com');
+insert into Donator values(2010, 'Iulian Ghiță', 'Sebeș', 'Alba', '0757392502', 'iulianghital@gmail.com');
+
+--Veterinar
+
+insert into Veterinar values(3000, 'Elena Cretu', null, 1, 'Medic primar veterinar' ,'Iasi', 'Iasi', '0734578946', 'cretu.elena@gmail.com');
+insert into Veterinar values(3001, 'Smaranda Mărguța', 1 , 2,'Medic veterinar gradul II', 'Iasi', 'Iasi', '0732619650', 'samarnduta@gmail.com');
+insert into Veterinar values(3002, 'Ștefania Țuțea', 2, 3, 'Medic veterinar gradul III', 'Iasi', 'Iasi', '0722384516', 'stefaniatutea@gmail.com');
+
+
+--Mancare
+
+insert into Mancare values(4000, 'uscata', 50, 'Royal Canin');
+insert into Mancare values(4001, 'uscata', 48, 'BRIT PREMIUM ');
+insert into Mancare values(4002, 'uscata', 56, 'Pedigree');
+insert into Mancare values(4003, 'umeda', 55, 'Royal Canin');
+insert into Mancare values(4004, 'umeda', 54, 'Purity Puppy');
+insert into Mancare values(4005, 'uscata', 55, 'Purity Puppy');
+insert into Mancare values(4006, 'umeda', 70, 'Mara Dog');
+insert into Mancare values(4007, 'uscata', 80, 'Mara Dog');
+
+
+--Animal
+
+insert into Animal values(5000, 'Rex', 'Caine', '5', 'M', 1000, 2000, 4000, 3000, DATE'2022-01-10', DATE'2022-04-17');
+
+insert into Animal values(5001, 'Misha', 'Caine', '8', 'F', 1006, 2000, 4007, 3000, DATE'2021-05-25', DATE'2022-06-22');
+insert into Animal values(5002, 'Ricotta', 'Pisica', '5', 'M', 1007, 2001, 4005, 3000, DATE'2021-06-02', DATE'2022-06-28');
+insert into Animal values(5003, 'Gipper', 'Caine', '10', 'M', 1007, 2002, 4004, 3000, DATE'2021-06-03', DATE'2022-07-27');
+insert into Animal values(5004, 'Condor', 'Pisica', '3', 'F', 1008, 2002, 4001, 3001, DATE'2021-06-17', DATE'2022-08-24');
+insert into Animal values(5005, 'Elmer', 'Pisica', '4', 'F', 1009, 2003, 4001, 3001, DATE'2021-06-25', DATE'2022-08-26');
+insert into Animal values(5006, 'Tiny', 'Caine', '17', 'M', 1002, 2004, 4003, 3001, DATE'2021-06-30', DATE'2022-09-08');
+insert into Animal values(5007, 'Dazzler', 'Caine', '20', 'F', 1004, 2004, 4002, 3001, DATE'2021-07-01', DATE'2022-09-13');
+insert into Animal values(5008, 'Mamba', 'Caine', '20', 'M', 1003, 2005, 4003, 3002, DATE'2021-08-16', DATE'2022-09-14');
+insert into Animal values(5009, 'Dodo', 'Caine', '13', 'M', 1003, 2006, 4004, 3002, DATE'2021-09-13', DATE'2022-10-27');
+insert into Animal values(5010, 'Ela', 'Pisica', '7', 'F', 1004, 2007, 4004, 3002, DATE'2021-09-21', DATE'2022-10-27');
+insert into Animal values(5011, 'Elmo', 'Caine', '24', 'F', 1001, 2007, 4005, 3002, DATE'2021-09-29', DATE'2022-10-27');
+insert into Animal values(5012, 'Enzo', 'Caine', '12', 'F', 1001, 2008, 4001, 3002, DATE'2021-10-25', DATE'2022-04-17');
+insert into Animal values(5013, 'Fram', 'Pisica', '7', 'M', 1003, 2008, 4003, 3000, DATE'2021-11-09', DATE'2022-04-17');
+insert into Animal values(5014, 'Falco', 'Pisica', '4', 'M', 1004, 2009, 4001, 3000, DATE'2021-11-11', DATE'2022-12-05');
+insert into Animal values(5015, 'Rex', 'Caine', '4','F', 1004, 2009, 4001, 3001, DATE'2021-11-12', DATE'2022-04-17');
+insert into Animal values(5016, 'Gruia', 'Pisica', '5', 'F', 1002, 2009, 4005, 3001, DATE'2021-12-14', DATE'2022-04-07');
+
+
+--Fisa_medicala
+
+insert into Fisa_medicala values(6000, 3000, 5000, 4000, DATE'2022-02-01', 'Compresa sterila', 'Arsura');
+
+insert into Fisa_medicala values(6001, 3000, 5001, 4007, DATE'2022-02-03', 'Vitamine sterila', 'Zgarietura');
+insert into Fisa_medicala values(6002, 3000, 5002, 4005, DATE'2022-02-04', 'Compresa sterila', 'Arsura');
+insert into Fisa_medicala values(6003, 3000, 5003, 4004, DATE'2022-03-24', 'Vitamine', 'Pofta Mancare');
+insert into Fisa_medicala values(6004, 3001, 5004, 4001, DATE'2022-04-14', 'Compresa sterila', 'Zgarietura');
+insert into Fisa_medicala values(6005, 3001, 5005, 4001, DATE'2022-05-24', 'Compresa sterila', 'Zgarietura');
+insert into Fisa_medicala values(6006, 3001, 5006, 4003, DATE'2022-04-17', 'Compresa sterila', 'Zgarietura');
+insert into Fisa_medicala values(6007, 3001, 5007, 4002, DATE'2022-05-14', 'Pastila greata', 'Varsaturi');
+insert into Fisa_medicala values(6008, 3002, 5008, 4003, DATE'2022-05-14', 'Compresa sterila', 'Arsura');
+insert into Fisa_medicala values(6009, 3002, 5009, 4004, DATE'2022-06-02', 'Compresa sterila', 'Arsura');
+insert into Fisa_medicala values(6010, 3002, 5010, 4004, DATE'2022-06-04', 'Vitamine ', 'Pofta Mancare');
+insert into Fisa_medicala values(6011, 3002, 5011, 4005, DATE'2022-07-06', 'Vitamine ', 'Pofta Mancare');
+insert into Fisa_medicala values(6012, 3002, 5012, 4001, DATE'2022-07-06', 'Compresa sterila', 'Arsura');
+insert into Fisa_medicala values(6013, 3000, 5013, 4003, DATE'2022-08-07', 'Pastila greata', 'Varsaturi');
+insert into Fisa_medicala values(6014, 3000, 5014, 4001, DATE'2022-08-03', 'Compresa sterila', 'Zgarietura');
+insert into Fisa_medicala values(6015, 3001, 5015, 4001, DATE'2022-06-02', 'Pastila greata', 'Varsaturi');
+insert into Fisa_medicala values(6016, 3001, 5016, 4005, DATE'2022-04-05', 'Compresa sterila', 'Arsura');
+
